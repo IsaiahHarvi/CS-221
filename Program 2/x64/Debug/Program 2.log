@@ -1,0 +1,8 @@
+﻿  Player.cpp
+C:\Users\harvi\Desktop\CodingLAP\CS-221\Program 2\Player.h(7,9): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Users\harvi\Desktop\CodingLAP\CS-221\Program 2\Player.h(7,9): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
+  Program 2.cpp
+C:\Users\harvi\Desktop\CodingLAP\CS-221\Program 2\Player.h(7,9): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Users\harvi\Desktop\CodingLAP\CS-221\Program 2\Player.h(7,9): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
+  Generating Code...
+  Program 2.vcxproj -> C:\Users\harvi\Desktop\CodingLAP\CS-221\Program 2\x64\Debug\Program 2.exe
