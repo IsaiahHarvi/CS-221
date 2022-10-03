@@ -3,7 +3,8 @@
 
 class Player {
 private:
-    std::string firstName, lastName;
+    std::string iFileName;
+    std::string oFileName;
     int stats[];
 
 public:
@@ -11,6 +12,6 @@ public:
     void setter();
     double getFenwick();
     double getCaloriesBurned();
-    std::string getFirstName();
-    std::string getLastName();
+    std::string getIFileName();
+    std::string getOFileName();
 };

@@ -10,58 +10,24 @@
 #include "Player.h"
 
 
-std::string grammaticallyCorrectApostrapheS(std::string lastName);
-
-
 int main()
 {
-    bool repeat; // True to continue the loop and False to break
-    char yn;     // Y keeps repeat at True, N will set it to False
-
-    do {
-        Player player;
+    Player player;
 
 
-        // Prompt
-        std::cout << "Welcome to the hockey player statistics test driver program." << std::endl
-            << "When prompted, please enter the player's data in the form of" << std::endl
-            << "Firstname Lastname Age ShotsTargetFor ShotsTargetAgainst MissedShotsFor MissedShotsAgainst MET Bodyweight" << std::endl;
-
-        std::cout << std::endl << "Enter PlayerData: ";
-
-        // Take input and build the player obj
-        player.setter();
-
-        // Print the player Data
-        std::cout << player.getFirstName() << " " << player.getLastName() << grammaticallyCorrectApostrapheS(player.getLastName()) << " FF% = " << player.getFenwick() << "%"
-            << " and Calories Burned = " << player.getCaloriesBurned() << std::endl;
-
-        // Prompt to test another player
-        std::cout << "Do you wish to test another [y/n]? ";
-        std::cin >> yn;
-
-        // Test another?  If 'n' the loop will break
-        if (yn == 'y' || yn == 'Y') {
-            repeat = true;
-        }
-        else { repeat = false; }
-
-    } while (repeat);
-
-    std::cout << "Program 1 Testing Complete" << std::endl;
-}
+    // Prompt
+    std::cout << "Welcome to the hockey player statistics test driver program." << std::endl
+        << "I am going to read players from an input data file. You will tell me the names of your input and output files." << std::endl
+        << "I will store all of the players in a list, compute each player's stats and then write the resulting team report to your output file." << std::endl;
 
 
-// Completely necessary function to properly construct the print statement for the player data.
-// Note: this is not a method because this function is exlusively for the test driver.
-//     : this program is developed passively with the main() only serving as a test.
-std::string grammaticallyCorrectApostrapheS(std::string lastName) {
-    // If the last name ends with "s" it will return a "'".  Otherwise it will return "'s".
-    // For Example: LastName = Neelis, Output: Nellis' Stats
-    // Example 2: LastName = Neel, Output: Neel's Stats
-    if (lastName.back() == 's') {
-        return "'";
-    }
+    player.setter();
 
-    return "'s";
+    std::cout << std::endl << "Reading Players from: " << player.getIFileName();
+
+    std::cout << std::endl << "The data has been written to your output file: " << player.getOFileName() << std::endl;;
+
+    std::cout << std::endl << "End of Program 2" << std::endl;
+
+    return 1;
 }

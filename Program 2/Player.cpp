@@ -1,11 +1,13 @@
 #include "Player.h"
 #include <iostream>
+#include <fstream>
+#include <istream>
 
 
 Player::Player() {
     // Default Constructor
-    firstName = "unknown";
-    lastName = "unkown";
+    iFileName = "";
+    oFileName = "";
 
     // Set all seven statistics values to 0.
     for (int i = 0; i < 7; i++) {
@@ -15,14 +17,18 @@ Player::Player() {
 
 
 void Player::setter() {
-    // Update the first and last name
-    std::cin >> firstName >> lastName;
+    std::ifstream inputFile;
 
-    // Insert the statistics in the array
-    for (int i = 0; i < 7; i++) {
-        std::cin >> stats[i];
+    std::cout << std::endl << "Enter input file name: ";
+    std::cin >> iFileName;
+    std::cout << std::endl << "Enter output file name: ";
+    std::cin >> oFileName;
+
+    inputFile.open(iFileName);
+
+    if (inputFile.is_open()) {
+        std::cout << "Open";
     }
-
 }
 
 
@@ -40,11 +46,11 @@ double Player::getCaloriesBurned() {
 }
 
 
-std::string Player::getFirstName() {
-    return firstName;
+std::string Player::getIFileName() {
+    return iFileName;
 }
 
 
-std::string Player::getLastName() {
-    return lastName;
+std::string Player::getOFileName() {
+    return oFileName;
 }
