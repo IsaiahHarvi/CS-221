@@ -8,6 +8,8 @@ Player::Player() {
     // Default Constructor
     iFileName = "";
     oFileName = "";
+    firstName = "";
+    lastName = "";
 
     // Set all seven statistics values to 0.
     for (int i = 0; i < 7; i++) {
@@ -16,18 +18,14 @@ Player::Player() {
 }
 
 
-void Player::setter() {
-    std::ifstream inputFile;
-
-    std::cout << std::endl << "Enter input file name: ";
-    std::cin >> iFileName;
-    std::cout << std::endl << "Enter output file name: ";
-    std::cin >> oFileName;
-
-    inputFile.open(iFileName);
-
+void Player::setter(std::ifstream *inputFile) {
+    // Read
     if (inputFile.is_open()) {
-        std::cout << "Open";
+        inputFile >> firstName >> lastName;
+
+        for (int i = 0; i < 7; i++) {
+            inputFile >> stats[i];
+        }
     }
 }
 
@@ -53,4 +51,14 @@ std::string Player::getIFileName() {
 
 std::string Player::getOFileName() {
     return oFileName;
+}
+
+
+std::string Player::getLastName() {
+    return lastName;
+}
+
+
+std::string Player::getFirstName() {
+    return firstName;
 }

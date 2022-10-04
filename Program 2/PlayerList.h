@@ -1,17 +1,20 @@
 #pragma once
+#include "Player.h"
 
 class PlayerList {
 private:
-	int players[];
+	int readSize;
+	int arrSize;
+	int index;
+	Player *playerArr;
 
 public:
-	PlayerList();
-	/*
-	void Add();
-	void Iterate();
-	void Clear();
+	PlayerList(int sizeOfArray);
+	void add(Player playerToAdd);
+	void clear();
 	bool isEmpty();
-	int size();
+	int getSize();
 	double totalCalBurned();
-	*/
+	bool hasNext();
+	Player getNext();
 };

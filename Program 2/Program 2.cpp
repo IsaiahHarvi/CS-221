@@ -7,13 +7,14 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include "Player.h"
+#include "PlayerList.h"
 
 
 int main()
 {
     Player player;
-
+    std::ifstream inputFile;
+    std::string inputFileName, outputFileName, firstName, lastName;
 
     // Prompt
     std::cout << "Welcome to the hockey player statistics test driver program." << std::endl
@@ -21,7 +22,18 @@ int main()
         << "I will store all of the players in a list, compute each player's stats and then write the resulting team report to your output file." << std::endl;
 
 
-    player.setter();
+    std::cout << std::endl << "Enter input file name: ";
+    std::cin >> inputFileName;
+    std::cout << std::endl << "Enter output file name: ";
+    std::cin >> outputFileName;
+
+    int lines = 0;
+    inputFile.open(inputFileName);
+
+    player.setter(&inputFile);
+
+    PlayerList players = PlayerList(lines);
+
 
     std::cout << std::endl << "Reading Players from: " << player.getIFileName();
 
@@ -30,4 +42,5 @@ int main()
     std::cout << std::endl << "End of Program 2" << std::endl;
 
     return 1;
+
 }
