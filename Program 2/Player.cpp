@@ -1,11 +1,7 @@
 #include "Player.h"
-#include <iostream>
-#include <fstream>
-#include <istream>
 
-
+// Default Constructor
 Player::Player() {
-    // Default Constructor
     iFileName = "";
     oFileName = "";
     firstName = "";
@@ -18,8 +14,9 @@ Player::Player() {
 }
 
 
+// Constructor
 void Player::setter(std::ifstream *inputFile) {
-    // Read
+   
     if (inputFile.is_open()) {
         inputFile >> firstName >> lastName;
 
@@ -30,6 +27,7 @@ void Player::setter(std::ifstream *inputFile) {
 }
 
 
+// Calculates Fenwick percentage
 double Player::getFenwick() {
     double numerator = (stats[1] + stats[3]); // Shots on Target for + Missed shots for
     double denominator = ((stats[1] + stats[3]) - (stats[2] + stats[4])); // (Numerator) - (shots on target against + missed shots against)
@@ -38,27 +36,32 @@ double Player::getFenwick() {
 }
 
 
+// Calculates Calories Burned
 double Player::getCaloriesBurned() {
     // (met * bodyweight * 3.5) / 200
     return (round(((stats[5] * stats[6] * 3.5) / 200) * 10) / 10); // Round to nearest 10ths place (first decimal).
 }
 
 
+// Returns the name of the input file
 std::string Player::getIFileName() {
     return iFileName;
 }
 
 
+// Returns the name of the output file
 std::string Player::getOFileName() {
     return oFileName;
 }
 
 
+// Returns the player's last name
 std::string Player::getLastName() {
     return lastName;
 }
 
 
+// Returns the player's first name
 std::string Player::getFirstName() {
     return firstName;
 }

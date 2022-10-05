@@ -3,10 +3,10 @@
 
 class PlayerList {
 private:
-	int readSize;
-	int arrSize;
+	int readSize; // amount of players read
+	int arrSize; // length of the playerList
 	int index;
-	Player *playerArr;
+	Player *playerArr; // playerList
 
 public:
 	PlayerList(int sizeOfArray);
