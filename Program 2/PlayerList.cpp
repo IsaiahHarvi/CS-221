@@ -1,73 +1,89 @@
 #include "PlayerList.h"
+#include<string>
+#include <iostream>
+#include <algorithm>
 
 
-// Constructor
-PlayerList::PlayerList(int sizeOfArray) {
-	arrSize = sizeOfArray;
-	readSize = 0; // # of players added to the array
-	index = 0; // position in array
-	playerArr = new Player[arrSize];
+Playerlist::Playerlist(int size) {
+	playerArr = new Player[size];
+
+	maxSize = size;
+	currentSize = 0;
+	iteratorIndex = 0;
 }
 
 
-// Insert Player object into PlayerList in an ordered manner
-void PlayerList::add(Player playerToAdd) {
-	for (int i = 0; i < arrSize; i++) {
-		if (playerToAdd.getLastName()[0] < playerArr[i].getLastName()[0]) { // sort by last name
-			for (int j = arrSize - 1; j >= i; j--) { // iterate backwards and shift from the insert index
-				playerArr[j] = playerArr[j - 1];
-			}
-			playerArr[i] = playerToAdd; // insert
-			readSize++; // read another player
-			break;
+bool Playerlist::addPlayer(Player player) {
+	if (currentSize == maxSize) {
+		return false;
+	}
+
+	std::string p1Name = player.getLastName() + player.getFirstName();
+	transform(p1Name.begin(), p1Name.end(), p1Name.begin(), std::tolower);
+	std::string p2Name;
+
+	for (int i = 0; i < currentSize; i++) {
+		p2Name = playerArr[i].getLastName() + playerArr[i].getFirstName();
+		transform(p2Name.begin(), p2Name.end(), p2Name.begin(), std::tolower);
+
+		if (p1Name < p2Name) {
+			insertPlayer(i, player);
+			currentSize++;
+			return true;
 		}
 	}
+
+	insertPlayer(currentSize, player);
+	currentSize++;
+	return true;
 }
 
 
-// If the getNext index is not outside the bounds of the array size
-bool PlayerList::hasNext() {
-	if (index < arrSize) {
-		return true;
+void Playerlist::insertPlayer(int index, Player player) {
+	for (int i = currentSize; i > index; i--) {
+		playerArr[i] = playerArr[i - 1];
 	}
 
-	return false;
+	playerArr[index] = player;
 }
 
 
-// Returns next element in playerArr (playerList)
-Player PlayerList::getNext() { 
-	return playerArr[index++];
-}
-
-
-// Deletes playerArr
-void PlayerList::clear() { 
-	readSize = 0; // amount of read players reset
-	index = 0; // current position in array reset 
+void Playerlist::clear() {
+	currentSize = 0;
+	iteratorIndex = 0;
 	delete playerArr;
 }
 
 
-// If no players have been read (the array is empty or deleted)
-bool PlayerList::isEmpty() { 
-	return readSize;
+bool Playerlist::isEmpty() {
+	return (currentSize == 0);
 }
 
 
-// Size of the overall array based on the number of lines in the text file
-int PlayerList::getSize() { 
-	return arrSize;
+int Playerlist::getSize() {
+	return currentSize;
 }
 
 
-// Adds up all of the calories from each player in the list
-double PlayerList::totalCalBurned() {
-	double totalCalories = 0;
+double Playerlist::getTotalCaloriesBurned() {
+	double total = 0;
 
-	for (int i = 0; i < arrSize; i++) {
-		totalCalories += playerArr[i].getCaloriesBurned(); // calculates each players CaloriesBurned and adds it
+	for (int i = 0; i < currentSize; i++) {
+		total += playerArr[i].getCaloriesBurned();
 	}
 
-	return totalCalories; // return sum of all calories
+	return total;
 }
+
+
+Player Playerlist::getNext() {
+	Player nextPlayer = playerArr[iteratorIndex];
+	iteratorIndex++;
+	return nextPlayer;
+}
+
+
+bool Playerlist::hasNext() {
+	return (iteratorIndex < currentSize);
+}
+
