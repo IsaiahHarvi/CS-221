@@ -1,89 +1,236 @@
 #include "PlayerList.h"
-#include<string>
+#include "Player.h"
+#include <string>
 #include <iostream>
-#include <algorithm>
+#include <iomanip>
+#include <fstream>
 
 
-Playerlist::Playerlist(int size) {
-	playerArr = new Player[size];
-
-	maxSize = size;
-	currentSize = 0;
-	iteratorIndex = 0;
+PlayerList::PlayerList() {
+	head = nullptr;
+	current = head;
+	last = head;
+	size = 0;
 }
 
 
-bool Playerlist::addPlayer(Player player) {
-	if (currentSize == maxSize) {
-		return false;
+void PlayerList::addPlayer(Player *player) {
+	if (size == 0) { // first element to be added to the list
+		head = player;
+		current = head;
+		last = head;
+		size++;
+
+		return;
 	}
+	
+	std::string selectedPlayer = player->getLastName() + player->getFirstName();
+	std::string comparePlayerName;
+	Player *currentPlayer = head;
+	
+	for (int i = 0; i < size; i++) {
+		comparePlayerName = currentPlayer->getLastName() + currentPlayer->getFirstName(); 
 
-	std::string p1Name = player.getLastName() + player.getFirstName();
-	transform(p1Name.begin(), p1Name.end(), p1Name.begin(), std::tolower);
-	std::string p2Name;
+		if (selectedPlayer < comparePlayerName) { // if a < b add n so: a < n < b
+			if (currentPlayer->prev == nullptr) { // if we are at the first node
+				player->next = currentPlayer;
+				currentPlayer->prev = player;
+				head = player;
+			}
 
-	for (int i = 0; i < currentSize; i++) {
-		p2Name = playerArr[i].getLastName() + playerArr[i].getFirstName();
-		transform(p2Name.begin(), p2Name.end(), p2Name.begin(), std::tolower);
+			else {
+				player->prev = currentPlayer->prev; // if we are not at the first node
+				currentPlayer->prev->next = player;
+				player->next = currentPlayer;
+				currentPlayer->prev = player;
+			}
+			size++; // added one
+			return;
+		}
+		currentPlayer = currentPlayer->next;
+	}
+	
+	// last node
+	player->prev = last; 
+	last->next = player;
+	last = player;
+	size++; // added to end
+}
 
-		if (p1Name < p2Name) {
-			insertPlayer(i, player);
-			currentSize++;
+
+bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
+	Player *toRemove = head;
+
+	while (true) {
+		// Not in list
+		if (toRemove == nullptr) {
+			return false;
+		}
+
+		if ((toRemove->getFirstName() + toRemove->getLastName()) == (firstName + lastName)) {
+			// Delete head
+			if (toRemove->prev == nullptr) {
+				std::cout << "in head" << std::endl;
+				head = toRemove->next;
+				toRemove->next->prev = nullptr;
+
+				size--;
+				delete toRemove;
+				return true;
+			}
+
+			// Not first or last node
+			if (toRemove->next != nullptr) {
+				toRemove->next->prev = toRemove->prev;
+				toRemove->prev->next = toRemove->next;
+
+				size--;
+				delete toRemove;
+				return true;
+			}
+
+			// Last Node
+			toRemove->prev->next = nullptr;
+			last = toRemove->prev;
+
+			size--;
+			delete toRemove;
 			return true;
 		}
+		toRemove = toRemove->next;
 	}
-
-	insertPlayer(currentSize, player);
-	currentSize++;
-	return true;
 }
 
 
-void Playerlist::insertPlayer(int index, Player player) {
-	for (int i = currentSize; i > index; i--) {
-		playerArr[i] = playerArr[i - 1];
+void PlayerList::clear() {
+	size = 0;
+	Player *del = nullptr;
+	while (head != nullptr) {
+		del = head;
+		head = head->next;
+		delete del;
 	}
-
-	playerArr[index] = player;
 }
 
 
-void Playerlist::clear() {
-	currentSize = 0;
-	iteratorIndex = 0;
-	delete playerArr;
+bool PlayerList::isEmpty() {
+	return (size == 0);
 }
 
 
-bool Playerlist::isEmpty() {
-	return (currentSize == 0);
+int PlayerList::getSize() {
+	return size;
 }
 
 
-int Playerlist::getSize() {
-	return currentSize;
-}
-
-
-double Playerlist::getTotalCaloriesBurned() {
+double PlayerList::getTotalCaloriesBurned() {
 	double total = 0;
+	Player *calPtr = head;
 
-	for (int i = 0; i < currentSize; i++) {
-		total += playerArr[i].getCaloriesBurned();
+	while (calPtr != nullptr) {
+		total += calPtr->getCaloriesBurned();
+		calPtr = calPtr->next;
 	}
 
 	return total;
 }
 
 
-Player Playerlist::getNext() {
-	Player nextPlayer = playerArr[iteratorIndex];
-	iteratorIndex++;
-	return nextPlayer;
+void PlayerList::getNext() {
+	Player *nextPlayer = current;
+	current = current->next;
 }
 
 
-bool Playerlist::hasNext() {
-	return (iteratorIndex < currentSize);
+void PlayerList::getPrev() {
+	Player *prevPlayer = current;
+	current = current->prev;
 }
 
+
+bool PlayerList::hasNext() {
+	return (current->next != nullptr);
+}
+
+
+bool PlayerList::hasPrev() {
+	return (current->prev != nullptr);
+}
+
+
+void PlayerList::writeData(std::string outFileName, bool afterRemoval) {
+	std::ofstream outFile;
+
+	// If no names have been removed
+	if (!afterRemoval) {
+		outFile.open(outFileName);
+		current = head;
+		// Write the header
+		outFile << "BASKETBALL TEAM REPORT --- " << getSize() << " PLAYERS FOUND IN FILE" << std::endl
+			<< "TOTAL CALORIES BURNED: " << getTotalCaloriesBurned() << std::endl << std::endl
+			<< "      " << "PLAYER NAME" << "      " << " :" << "      " << "FF%" << "      " << "      " << "Calories burned" << std::endl
+			<< "---------------------------------------------------------------------" << std::endl << std::right;
+	
+		// Write the players
+		while (current != nullptr ) {
+			outFile << std::setw(30) << current->getLastName() << ", " << current->getFirstName() << " :"
+				<< std::setw(15) << current->getFenwick()
+				<< std::setw(20) << current->getCaloriesBurned() << std::endl;
+			current = current->next;
+		}
+		outFile.close();
+	}
+
+	// If names have been removed
+	if (afterRemoval) {
+		outFile.open(outFileName, std::ios_base::app);
+		current = last;
+		// Write after removal header
+		outFile << std::endl << "The list after removals contains " << size <<  " entries" << std::endl << "They are in Reverse Order:" << std::endl << std::endl;
+
+		// Write the players after removal
+		while (current != nullptr) {
+			outFile << std::setw(30) << current->getLastName() << ", " << current->getFirstName() << " :"
+				<< std::setw(15) << current->getFenwick()
+				<< std::setw(20) << current->getCaloriesBurned() << std::endl;
+			current = current->prev;
+		}
+		outFile.close();
+	}
+}
+
+
+// Function to Read the data from input file
+void PlayerList::getPlayers(std::string inFileName) {
+	std::ifstream inputFile;
+	std::string line; // contains the data of the read line
+	std::string firstName, lastName; // variables for first and last name of player
+	int statsArr[7]; // array to pass the stats to player obj
+	int lineNum = 0;
+
+	inputFile.open(inFileName);
+	while (!inputFile.eof()) { // while not at end of file
+		std::getline(inputFile, line); // read a line from the file and store it in the line variable
+		lineNum++; // get the number of players in the folder by counting lines
+	}
+	
+	// Return to beginning of file
+	inputFile.close();
+	inputFile.open(inFileName);
+
+	//PlayerList player = PlayerList();
+	while (!inputFile.eof()) { // while not at end of file
+		// save names to name variables
+		inputFile >> firstName;
+		inputFile >> lastName;
+
+		// save stats to array
+		for (int i = 0; i < 7; i++) {
+			inputFile >> statsArr[i];
+		}
+
+		// pass the data read from the file into a player obj and add it to the playerlist
+		Player *newPlayer = new Player(firstName, lastName, statsArr); // there is an issue here
+		addPlayer(newPlayer);
+	}
+}

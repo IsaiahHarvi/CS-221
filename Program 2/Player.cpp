@@ -3,8 +3,11 @@
 
 // Default Constructor
 Player::Player() {
-	firstName = "";
-	lastName = "";
+	next = nullptr;
+	prev = nullptr;
+
+	firstName = "unkown";
+	lastName = "unknown";
 
 	for (int i = 0; i < 7; i++) {
 		stats[i] = 0;
@@ -44,7 +47,7 @@ double Player::getFenwick() {
 }
 
 
-// Calculate the buned calories
+// Calculate the burned calories
 double Player::getCaloriesBurned() {
 	// (met * bodyweight * 3.5) / 200
 	return (round(((stats[5] * stats[6] * 3.5) / 200) * 10) / 10); // Round to nearest 10ths place (first decimal).

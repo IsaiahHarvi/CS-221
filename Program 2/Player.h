@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 
 class Player {
@@ -9,6 +8,8 @@ private:
 	int stats[7];
 
 public:
+	Player *next;
+	Player *prev;
 	Player();
     Player(std::string firstName, std::string lastName, int statsArray[]);
 	std::string getFirstName();

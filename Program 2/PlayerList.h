@@ -2,23 +2,26 @@
 #include "Player.h"
 
 
-class Playerlist {
+class PlayerList {
 private:
-	Player* playerArr;
-	int maxSize;
-	int currentSize;
-	int iteratorIndex;
-	void insertPlayer(int index, Player player);
+	Player *head;
+	Player *last;
+	Player *current;
+	int size;
+
 
 public:
-	Playerlist(int size);
-	bool addPlayer(Player player);
-	void clear();
+	PlayerList();
+	void addPlayer(Player *player);
+	bool removePlayer(std::string firstName, std::string lastName);
+	double getTotalCaloriesBurned();
 	bool isEmpty();
 	int getSize();
-	double getTotalCaloriesBurned();
-	Player getNext();
+	void clear();
 	bool hasNext();
-
-
+	bool hasPrev();
+	void getNext();
+	void getPrev();
+	void writeData(std::string outFileName, bool afterRemoval);
+	void getPlayers(std::string inFileName);
 };
