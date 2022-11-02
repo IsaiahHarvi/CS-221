@@ -1,5 +1,6 @@
 #include "PlayerList.h"
 #include "Player.h"
+#include "bitwiseFunctions.h"
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -24,12 +25,12 @@ void PlayerList::addPlayer(Player *player) {
 		return;
 	}
 	
-	std::string selectedPlayer = player->getLastName() + player->getFirstName();
+	std::string selectedPlayer = player->getLastName() + player->getFirstName(); //
 	std::string comparePlayerName;
 	Player *currentPlayer = head;
 	
 	for (int i = 0; i < size; i++) {
-		comparePlayerName = currentPlayer->getLastName() + currentPlayer->getFirstName(); 
+		comparePlayerName = currentPlayer->getLastName() + currentPlayer->getFirstName();  //
 
 		if (selectedPlayer < comparePlayerName) { // if a < b add n so: a < n < b
 			if (currentPlayer->prev == nullptr) { // if we are at the first node
@@ -67,7 +68,7 @@ bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 			return false;
 		}
 
-		if ((toRemove->getFirstName() + toRemove->getLastName()) == (firstName + lastName)) {
+		if ((toRemove->getFirstName() + toRemove->getLastName()) == (firstName + lastName)) { //
 			// Delete head
 			if (toRemove->prev == nullptr) {
 				std::cout << "in head" << std::endl;
