@@ -25,22 +25,18 @@ void PlayerList::addPlayer(Player *player) {
 		return;
 	}
 	
-	std::string selectedPlayer = player->getLastName() + player->getFirstName(); //
-	std::string comparePlayerName;
 	Player *currentPlayer = head;
-	
 	for (int i = 0; i < size; i++) {
-		comparePlayerName = currentPlayer->getLastName() + currentPlayer->getFirstName();  //
-
-		if (selectedPlayer < comparePlayerName) { // if a < b add n so: a < n < b
-			if (currentPlayer->prev == nullptr) { // if we are at the first node
-				player->next = currentPlayer;
-				currentPlayer->prev = player;
-				head = player;
+		if ((player->getLastName() + player->getFirstName()) < (currentPlayer->getLastName() + currentPlayer->getFirstName())) { // if a < b add n so: a < n < b
+			if (currentPlayer->prev == nullptr) { // If we are at the first node
+				player->next = currentPlayer;	 // pointing our new head forwards to the old head
+				currentPlayer->prev = player;	 // pointing back to the new head
+				head = player;					 // updating head
 			}
 
 			else {
-				player->prev = currentPlayer->prev; // if we are not at the first node
+				// If not first node
+				player->prev = currentPlayer->prev;
 				currentPlayer->prev->next = player;
 				player->next = currentPlayer;
 				currentPlayer->prev = player;
@@ -68,10 +64,9 @@ bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 			return false;
 		}
 
-		if ((toRemove->getFirstName() + toRemove->getLastName()) == (firstName + lastName)) { //
+		if ((toRemove->getFirstName() + toRemove->getLastName()) == (firstName + lastName)) { 
 			// Delete head
 			if (toRemove->prev == nullptr) {
-				std::cout << "in head" << std::endl;
 				head = toRemove->next;
 				toRemove->next->prev = nullptr;
 
@@ -90,7 +85,7 @@ bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 				return true;
 			}
 
-			// Last Node
+			// Last Nodef
 			toRemove->prev->next = nullptr;
 			last = toRemove->prev;
 
@@ -138,13 +133,11 @@ double PlayerList::getTotalCaloriesBurned() {
 
 
 void PlayerList::getNext() {
-	Player *nextPlayer = current;
 	current = current->next;
 }
 
 
 void PlayerList::getPrev() {
-	Player *prevPlayer = current;
 	current = current->prev;
 }
 
@@ -159,45 +152,44 @@ bool PlayerList::hasPrev() {
 }
 
 
-void PlayerList::writeData(std::string outFileName, bool afterRemoval) {
+void PlayerList::writeData(std::string outFileName, char remove) {
 	std::ofstream outFile;
 
 	// If no names have been removed
-	if (!afterRemoval) {
+	if (remove != 'y') {
 		outFile.open(outFileName);
 		current = head;
+
 		// Write the header
 		outFile << "BASKETBALL TEAM REPORT --- " << getSize() << " PLAYERS FOUND IN FILE" << std::endl
 			<< "TOTAL CALORIES BURNED: " << getTotalCaloriesBurned() << std::endl << std::endl
 			<< "      " << "PLAYER NAME" << "      " << " :" << "      " << "FF%" << "      " << "      " << "Calories burned" << std::endl
 			<< "---------------------------------------------------------------------" << std::endl << std::right;
-	
-		// Write the players
-		while (current != nullptr ) {
-			outFile << std::setw(30) << current->getLastName() << ", " << current->getFirstName() << " :"
-				<< std::setw(15) << current->getFenwick()
-				<< std::setw(20) << current->getCaloriesBurned() << std::endl;
-			current = current->next;
-		}
-		outFile.close();
 	}
 
 	// If names have been removed
-	if (afterRemoval) {
+	if (remove == 'y') {
 		outFile.open(outFileName, std::ios_base::app);
 		current = last;
-		// Write after removal header
-		outFile << std::endl << "The list after removals contains " << size <<  " entries" << std::endl << "They are in Reverse Order:" << std::endl << std::endl;
 
-		// Write the players after removal
-		while (current != nullptr) {
-			outFile << std::setw(30) << current->getLastName() << ", " << current->getFirstName() << " :"
-				<< std::setw(15) << current->getFenwick()
-				<< std::setw(20) << current->getCaloriesBurned() << std::endl;
-			current = current->prev;
-		}
-		outFile.close();
+		// Write after removal header
+		outFile << std::endl << "The list after removals contains " << size << " entries" << std::endl << "They are in Reverse Order:" << std::endl << std::endl;
 	}
+
+	// Write Player Data
+	while (current != nullptr) {
+		outFile << std::setw(30) << current->getLastName() << ", " << current->getFirstName() << " :"
+			<< std::setw(15) << current->getFenwick()
+			<< std::setw(20) << current->getCaloriesBurned() << std::endl;
+
+		if (remove == 'y') {
+			getPrev();
+		}
+		else {
+			getNext();
+		}
+	}
+	outFile.close();
 }
 
 
@@ -231,7 +223,7 @@ void PlayerList::getPlayers(std::string inFileName) {
 		}
 
 		// pass the data read from the file into a player obj and add it to the playerlist
-		Player *newPlayer = new Player(firstName, lastName, statsArr); // there is an issue here
+		Player *newPlayer = new Player(firstName, lastName, statsArr);
 		addPlayer(newPlayer);
 	}
 }

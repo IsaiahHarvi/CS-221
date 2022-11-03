@@ -8,8 +8,8 @@ private:
 	int stats[7];
 
 public:
-	Player *next;
-	Player *prev;
+	Player *next;  // For our PlayerList Doubly Linked list
+	Player *prev;  // 
 	Player();
     Player(std::string firstName, std::string lastName, int statsArray[]);
 	std::string getFirstName();

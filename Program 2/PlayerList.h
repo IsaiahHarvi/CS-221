@@ -22,6 +22,6 @@ public:
 	bool hasPrev();
 	void getNext();
 	void getPrev();
-	void writeData(std::string outFileName, bool afterRemoval);
+	void writeData(std::string outFileName, char remove);
 	void getPlayers(std::string inFileName);
 };

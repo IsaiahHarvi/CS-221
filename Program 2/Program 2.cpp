@@ -9,10 +9,6 @@
 #include <fstream>
 
 
-PlayerList getPlayers(std::string iFileName);
-void writeData(std::string outFileName, PlayerList players);
-
-
 int main() {
 	PlayerList playerList;
 	std::string iFileName;
@@ -36,7 +32,7 @@ int main() {
 	// Read
 	std::cout << std::endl << "Reading Players from: " << iFileName;
 	playerList.getPlayers(iFileName);
-	playerList.writeData(oFileName, false);
+	playerList.writeData(oFileName, NULL);
 
 	// Remove?
 	do {
@@ -49,7 +45,7 @@ int main() {
 
 			if (playerList.removePlayer(firstName, lastName)) {
 				std::cout << "\t" << firstName << " " << lastName << " Removed Successfully." << std::endl;
-				playerList.writeData(oFileName, true);
+				playerList.writeData(oFileName, remove);
 			}
 			else {
 				std::cout << "\t" << firstName << " " << lastName << " was not found in your list." << std::endl;
@@ -60,7 +56,7 @@ int main() {
 	
 	
 	// End
-	std::cout << "Testing Complete.  Both versions of the list have been printed to out.txt: " << oFileName << std::endl;
+	std::cout << "Testing Complete.  Both versions of the list have been printed to: " << oFileName << std::endl;
 	std::cout << std::endl << "End of Program 3" << std::endl;
 
 	return 1;
