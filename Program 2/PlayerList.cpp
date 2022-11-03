@@ -1,6 +1,5 @@
 #include "PlayerList.h"
 #include "Player.h"
-#include "bitwiseFunctions.h"
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -16,8 +15,9 @@ PlayerList::PlayerList() {
 
 
 void PlayerList::addPlayer(Player *player) {
-	if (size == 0) { // first element to be added to the list
-		head = player;
+	// Adding the head node
+	if (size == 0) {
+		head = player; 
 		current = head;
 		last = head;
 		size++;
@@ -28,44 +28,47 @@ void PlayerList::addPlayer(Player *player) {
 	Player *currentPlayer = head;
 	for (int i = 0; i < size; i++) {
 		if ((player->getLastName() + player->getFirstName()) < (currentPlayer->getLastName() + currentPlayer->getFirstName())) { // if a < b add n so: a < n < b
-			if (currentPlayer->prev == nullptr) { // If we are at the first node
+			// If we are at the first node
+			if (currentPlayer->prev == nullptr) {
 				player->next = currentPlayer;	 // pointing our new head forwards to the old head
 				currentPlayer->prev = player;	 // pointing back to the new head
 				head = player;					 // updating head
 			}
 
 			else {
-				// If not first node
-				player->prev = currentPlayer->prev;
-				currentPlayer->prev->next = player;
-				player->next = currentPlayer;
-				currentPlayer->prev = player;
+				// If we are in a middle node
+				player->prev = currentPlayer->prev; // pointing player's previous to the same node it is replacing previous 
+				currentPlayer->prev->next = player; // pointing the previous node to player
+				player->next = currentPlayer;		// pointing player to the node it just inserted before
+				currentPlayer->prev = player;		// pointing the +1 index node back to player
 			}
-			size++; // added one
+			size++;
+
 			return;
 		}
 		currentPlayer = currentPlayer->next;
 	}
 	
-	// last node
+	// If we are at the last node
 	player->prev = last; 
 	last->next = player;
 	last = player;
-	size++; // added to end
+	size++;
 }
 
 
 bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 	Player *toRemove = head;
 
-	while (true) {
-		// Not in list
+	while (true) { // Will return true if player is removed, false if player is not removed.
+		// If the player specified is not in the list
 		if (toRemove == nullptr) {
 			return false;
 		}
 
+		// If the player is in the list
 		if ((toRemove->getFirstName() + toRemove->getLastName()) == (firstName + lastName)) { 
-			// Delete head
+			// If the player is the head node
 			if (toRemove->prev == nullptr) {
 				head = toRemove->next;
 				toRemove->next->prev = nullptr;
@@ -75,7 +78,7 @@ bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 				return true;
 			}
 
-			// Not first or last node
+			// If the player between first or last
 			if (toRemove->next != nullptr) {
 				toRemove->next->prev = toRemove->prev;
 				toRemove->prev->next = toRemove->next;
@@ -85,7 +88,7 @@ bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 				return true;
 			}
 
-			// Last Nodef
+			// If the player is the last node
 			toRemove->prev->next = nullptr;
 			last = toRemove->prev;
 
@@ -99,12 +102,12 @@ bool PlayerList::removePlayer(std::string firstName, std::string lastName) {
 
 
 void PlayerList::clear() {
-	size = 0;
-	Player *del = nullptr;
+	size = 0; // list is now of size 0
+	Player *del = nullptr; 
 	while (head != nullptr) {
 		del = head;
-		head = head->next;
-		delete del;
+		head = head->next; // our new head is the next index
+		delete del;		   // delete the previous head
 	}
 }
 
@@ -122,7 +125,6 @@ int PlayerList::getSize() {
 double PlayerList::getTotalCaloriesBurned() {
 	double total = 0;
 	Player *calPtr = head;
-
 	while (calPtr != nullptr) {
 		total += calPtr->getCaloriesBurned();
 		calPtr = calPtr->next;
@@ -158,19 +160,19 @@ void PlayerList::writeData(std::string outFileName, char remove) {
 	// If no names have been removed
 	if (remove != 'y') {
 		outFile.open(outFileName);
-		current = head;
+		current = head; // start at beginning of list
 
 		// Write the header
 		outFile << "BASKETBALL TEAM REPORT --- " << getSize() << " PLAYERS FOUND IN FILE" << std::endl
-			<< "TOTAL CALORIES BURNED: " << getTotalCaloriesBurned() << std::endl << std::endl
-			<< "      " << "PLAYER NAME" << "      " << " :" << "      " << "FF%" << "      " << "      " << "Calories burned" << std::endl
-			<< "---------------------------------------------------------------------" << std::endl << std::right;
+				<< "TOTAL CALORIES BURNED: " << getTotalCaloriesBurned() << std::endl << std::endl
+				<< "      " << "PLAYER NAME" << "      " << " :" << "      " << "FF%" << "      " << "      " << "Calories burned" << std::endl
+				<< "---------------------------------------------------------------------" << std::endl << std::right;
 	}
 
 	// If names have been removed
 	if (remove == 'y') {
 		outFile.open(outFileName, std::ios_base::app);
-		current = last;
+		current = last; // start at the end of the list
 
 		// Write after removal header
 		outFile << std::endl << "The list after removals contains " << size << " entries" << std::endl << "They are in Reverse Order:" << std::endl << std::endl;
@@ -179,14 +181,13 @@ void PlayerList::writeData(std::string outFileName, char remove) {
 	// Write Player Data
 	while (current != nullptr) {
 		outFile << std::setw(30) << current->getLastName() << ", " << current->getFirstName() << " :"
-			<< std::setw(15) << current->getFenwick()
-			<< std::setw(20) << current->getCaloriesBurned() << std::endl;
+				<< std::setw(15) << current->getFenwick()
+				<< std::setw(20) << current->getCaloriesBurned() << std::endl;
 
 		if (remove == 'y') {
-			getPrev();
-		}
-		else {
-			getNext();
+			getPrev(); // if names have been removed we are at the end of the list and need to traverse backwards
+		}else {
+			getNext(); // if names have not been removed we are at the beginning of the list and need to traverse forwards
 		}
 	}
 	outFile.close();

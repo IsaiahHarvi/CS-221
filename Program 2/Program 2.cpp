@@ -3,6 +3,7 @@
 // Program 3.cpp : This program calculates Advanced Statistics For a Hockey Player.
 //               : The program will read from an input data file and will perform a series of calculations.
 //               : It will then return the calculations in another data file.
+//				 : Program 3 is the same as Program 2 except it utilizes a linked list instead of an array and offers the removal of players.
 
 #include "PlayerList.h"
 #include <iostream>
@@ -32,7 +33,7 @@ int main() {
 	// Read
 	std::cout << std::endl << "Reading Players from: " << iFileName;
 	playerList.getPlayers(iFileName);
-	playerList.writeData(oFileName, NULL);
+	playerList.writeData(oFileName, NULL); // writeData(fileName, character which indicates if anything has been removed)
 
 	// Remove?
 	do {
@@ -43,15 +44,15 @@ int main() {
 			std::cout << "\tPlease enter the First and Last Name of the Player: ";
 			std::cin >> firstName >> lastName; 
 
-			if (playerList.removePlayer(firstName, lastName)) {
+			if (playerList.removePlayer(firstName, lastName)) { // If the player was in the list
 				std::cout << "\t" << firstName << " " << lastName << " Removed Successfully." << std::endl;
 				playerList.writeData(oFileName, remove);
 			}
-			else {
+
+			else { // If the player was not in the list
 				std::cout << "\t" << firstName << " " << lastName << " was not found in your list." << std::endl;
 			}
 		}
-
 	} while (remove == 'y');
 	
 	

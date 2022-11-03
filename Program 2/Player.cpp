@@ -5,7 +5,6 @@
 Player::Player() {
 	next = nullptr;
 	prev = nullptr;
-
 	firstName = "unkown";
 	lastName = "unknown";
 
