@@ -31,6 +31,9 @@ int main() {
 	std::cout << std::endl << "Reading Players from: " << iFileName << std::endl;
 	tree->getPlayers(tree, iFileName);
 	
+	// Print Players to Console (in reverse)
+	tree->printTree(tree);
+	
 	// Write
 	tree->writeFile(tree, oFileName);
 	

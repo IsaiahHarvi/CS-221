@@ -111,13 +111,16 @@ void BST::printTree(BST *current) {
 		return;
 	}
 	
-	// Right First so it prints in descending order
+	// Right First to prints in descending order
 	if (current->right != nullptr) {
 		printTree(current->right);
 	}
 
 	// Print
-	std::cout << std::endl << current->val->getFirstName() << " " << current->val->getLastName();
+	std::cout << std::right << std::setw(20) << current->val->getLastName() << ", "
+		<< std::left << std::setw(10) << current->val->getFirstName() << " : "
+		<< std::right << std::setw(5) << current->val->getFenwick()
+		<< std::setw(10) << current->val->getCaloriesBurned() << std::endl;
 
 	// Left Second
 	if (current->left != nullptr) {
@@ -130,9 +133,6 @@ void BST::printTree(BST *current) {
 void BST::writeFile(BST* root, std::string outFileName) {
 	std::ofstream outFile;
 	BST *current = root; // May be redundant.
-
-	// Print Players to Console
-	printTree(current);
 
 	outFile.open(outFileName);
 	
@@ -149,7 +149,7 @@ void BST::writeFile(BST* root, std::string outFileName) {
 }
 
 
-// Write the players to the file
+// Write the players to the file 
 void BST::writePlayer(BST *current, std::ostream &outFile) {
 	// Empty
 	if (current == nullptr) {
@@ -161,10 +161,11 @@ void BST::writePlayer(BST *current, std::ostream &outFile) {
 		writePlayer(current->left, outFile); // Go further left
 	}
 
-	// Write to the file
-	outFile << std::setw(30) << current->val->getLastName() << ", " << current->val->getFirstName() << " :"
-		<< std::setw(15) << current->val->getFenwick()
-		<< std::setw(20) << current->val->getCaloriesBurned() << std::endl;
+	// Write to the file: lastName, firstName, fenwick, caloriesBurned
+	outFile << std::right << std::setw(20) << current->val->getLastName() << ", "
+		<< std::left << std::setw(10) << current->val->getFirstName() << " : "
+		<< std::right << std::setw(5) << current->val->getFenwick()
+		<< std::setw(10) << current->val->getCaloriesBurned() << std::endl;
 
 	// Right
 	if (current->right != nullptr) {
@@ -194,4 +195,6 @@ void BST::getPlayers(BST *root, std::string inFileName) {
 		// Pass the data read from the file into a player obj and add it to the tree
 		root->addPlayer(root, new Player(firstName, lastName, statsArr));
 	}
+
+	inputFile.close(); 
 }
